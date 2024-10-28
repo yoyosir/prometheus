@@ -432,6 +432,10 @@ func (d *Discovery) Run(ctx context.Context, ch chan<- []*targetgroup.Group) {
 						//esl := *ss.(disv1.EndpointSliceList)
 
 						level.Error(d.logger).Log("msg", "zytestingg eps3", "role", d.role, "len", len(ss.Items))
+						if err != nil {
+							level.Error(d.logger).Log("msg", "zytestingg eps3 err", "role", d.role, "len", len(ss.Items), "err", err.Error())
+						}
+						level.Error(d.logger).Log("msg", "zytestingg eps3 label", "selector", options.LabelSelector)
 						return ss, err
 					},
 					WatchFunc: func(options metav1.ListOptions) (watch.Interface, error) {
