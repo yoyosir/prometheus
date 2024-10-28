@@ -391,6 +391,7 @@ const resyncDisabled = 0
 
 // Run implements the discoverer interface.
 func (d *Discovery) Run(ctx context.Context, ch chan<- []*targetgroup.Group) {
+	level.Error(d.logger).Log("msg", "zytestingg")
 	d.Lock()
 
 	namespaces := d.getNamespaces()
