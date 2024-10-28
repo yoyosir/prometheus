@@ -428,7 +428,11 @@ func (d *Discovery) Run(ctx context.Context, ch chan<- []*targetgroup.Group) {
 					ListFunc: func(options metav1.ListOptions) (runtime.Object, error) {
 						options.FieldSelector = d.selectors.endpointslice.field
 						options.LabelSelector = d.selectors.endpointslice.label
-						return e.List(ctx, options)
+						ss, err := e.List(ctx, options)
+						//esl := *ss.(disv1.EndpointSliceList)
+
+						level.Error(d.logger).Log("msg", "zytestingg eps3", "role", d.role, "len", len(ss.Items))
+						return ss, err
 					},
 					WatchFunc: func(options metav1.ListOptions) (watch.Interface, error) {
 						options.FieldSelector = d.selectors.endpointslice.field
@@ -438,6 +442,7 @@ func (d *Discovery) Run(ctx context.Context, ch chan<- []*targetgroup.Group) {
 				}
 				informer = d.newEndpointSlicesByNodeInformer(elw, &disv1.EndpointSlice{})
 			} else {
+				level.Error(d.logger).Log("msg", "zytestingg eps4 wrongg", "role", d.role)
 				e := d.client.DiscoveryV1beta1().EndpointSlices(namespace)
 				elw := &cache.ListWatch{
 					ListFunc: func(options metav1.ListOptions) (runtime.Object, error) {
