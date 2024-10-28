@@ -395,13 +395,14 @@ const resyncDisabled = 0
 
 // Run implements the discoverer interface.
 func (d *Discovery) Run(ctx context.Context, ch chan<- []*targetgroup.Group) {
-	level.Error(d.logger).Log("msg", "zytestingg")
+	level.Error(d.logger).Log("msg", "zytestingg", "role", d.role)
 	d.Lock()
 
 	namespaces := d.getNamespaces()
 
 	switch d.role {
 	case RoleEndpointSlice:
+		level.Error(d.logger).Log("msg", "zytestingg eps", "role", d.role)
 		// Check "networking.k8s.io/v1" availability with retries.
 		// If "v1" is not available, use "networking.k8s.io/v1beta1" for backward compatibility
 		var v1Supported bool
@@ -417,6 +418,7 @@ func (d *Discovery) Run(ctx context.Context, ch chan<- []*targetgroup.Group) {
 			d.Unlock()
 			return
 		}
+		level.Error(d.logger).Log("msg", "zytestingg eps2", "role", d.role, "namespace", namespaces)
 
 		for _, namespace := range namespaces {
 			var informer cache.SharedIndexInformer
