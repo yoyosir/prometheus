@@ -287,7 +287,7 @@ const (
 )
 
 func (e *EndpointSlice) buildEndpointSlice(eps endpointSliceAdaptor) *targetgroup.Group {
-	level.Error(e.logger).Log("msg", "zytestingg buildEndpointSlice 1")
+	level.Error(e.logger).Log("msg", "zytestingg buildEndpointSlice 1", "epsname", eps.name())
 	tg := &targetgroup.Group{
 		Source: endpointSliceSource(eps),
 	}
@@ -296,22 +296,22 @@ func (e *EndpointSlice) buildEndpointSlice(eps endpointSliceAdaptor) *targetgrou
 		endpointSliceAddressTypeLabel: lv(eps.addressType()),
 	}
 
-	level.Error(e.logger).Log("msg", "zytestingg buildEndpointSlice 2")
+	level.Error(e.logger).Log("msg", "zytestingg buildEndpointSlice 2", "epsname", eps.name())
 	addObjectMetaLabels(tg.Labels, eps.getObjectMeta(), RoleEndpointSlice)
-	level.Error(e.logger).Log("msg", "zytestingg buildEndpointSlice 3")
+	level.Error(e.logger).Log("msg", "zytestingg buildEndpointSlice 3", "epsname", eps.name())
 
 	e.addServiceLabels(eps, tg)
-	level.Error(e.logger).Log("msg", "zytestingg buildEndpointSlice 4")
+	level.Error(e.logger).Log("msg", "zytestingg buildEndpointSlice 4", "epsname", eps.name())
 
 	type podEntry struct {
 		pod          *apiv1.Pod
 		servicePorts []endpointSlicePortAdaptor
 	}
 	seenPods := map[string]*podEntry{}
-	level.Error(e.logger).Log("msg", "zytestingg buildEndpointSlice 5")
+	level.Error(e.logger).Log("msg", "zytestingg buildEndpointSlice 5", "epsname", eps.name())
 
 	add := func(addr string, ep endpointSliceEndpointAdaptor, port endpointSlicePortAdaptor) {
-		level.Error(e.logger).Log("msg", "zytestingg ADDbuildEndpointSliceADD 1")
+		level.Error(e.logger).Log("msg", "zytestingg ADDbuildEndpointSliceADD 1", "epsname", eps.name())
 		a := addr
 		if port.port() != nil {
 			a = net.JoinHostPort(addr, strconv.FormatUint(uint64(*port.port()), 10))
@@ -353,19 +353,19 @@ func (e *EndpointSlice) buildEndpointSlice(eps endpointSliceAdaptor) *targetgrou
 			target[endpointSliceEndpointHostnameLabel] = lv(*ep.hostname())
 		}
 
-		level.Error(e.logger).Log("msg", "zytestingg ADDbuildEndpointSliceADD 2")
+		level.Error(e.logger).Log("msg", "zytestingg ADDbuildEndpointSliceADD 2", "epsname", eps.name())
 		if ep.targetRef() != nil {
 			target[model.LabelName(endpointSliceAddressTargetKindLabel)] = lv(ep.targetRef().Kind)
 			target[model.LabelName(endpointSliceAddressTargetNameLabel)] = lv(ep.targetRef().Name)
 		}
 
-		level.Error(e.logger).Log("msg", "zytestingg ADDbuildEndpointSliceADD 3")
+		level.Error(e.logger).Log("msg", "zytestingg ADDbuildEndpointSliceADD 3", "epsname", eps.name())
 		for k, v := range ep.topology() {
 			ln := strutil.SanitizeLabelName(k)
 			target[model.LabelName(endpointSliceEndpointTopologyLabelPrefix+ln)] = lv(v)
 			target[model.LabelName(endpointSliceEndpointTopologyLabelPresentPrefix+ln)] = presentValue
 		}
-		level.Error(e.logger).Log("msg", "zytestingg ADDbuildEndpointSliceADD 4")
+		level.Error(e.logger).Log("msg", "zytestingg ADDbuildEndpointSliceADD 4", "epsname", eps.name())
 
 		if e.withNodeMetadata {
 			if ep.targetRef() != nil && ep.targetRef().Kind == "Node" {
@@ -383,7 +383,7 @@ func (e *EndpointSlice) buildEndpointSlice(eps endpointSliceAdaptor) *targetgrou
 		}
 		s := namespacedName(pod.Namespace, pod.Name)
 
-		level.Error(e.logger).Log("msg", "zytestingg ADDbuildEndpointSliceADD 5")
+		level.Error(e.logger).Log("msg", "zytestingg ADDbuildEndpointSliceADD 5", "epsname", eps.name())
 		sp, ok := seenPods[s]
 		if !ok {
 			sp = &podEntry{pod: pod}
@@ -393,7 +393,7 @@ func (e *EndpointSlice) buildEndpointSlice(eps endpointSliceAdaptor) *targetgrou
 		// Attach standard pod labels.
 		target = target.Merge(podLabels(pod))
 
-		level.Error(e.logger).Log("msg", "zytestingg ADDbuildEndpointSliceADD 6")
+		level.Error(e.logger).Log("msg", "zytestingg ADDbuildEndpointSliceADD 6", "epsname", eps.name())
 		// Attach potential container port labels matching the endpoint port.
 		for _, c := range pod.Spec.Containers {
 			for _, cport := range c.Ports {
@@ -413,7 +413,7 @@ func (e *EndpointSlice) buildEndpointSlice(eps endpointSliceAdaptor) *targetgrou
 			}
 		}
 
-		level.Error(e.logger).Log("msg", "zytestingg ADDbuildEndpointSliceADD 7")
+		level.Error(e.logger).Log("msg", "zytestingg ADDbuildEndpointSliceADD 7", "epsname", eps.name())
 		// Add service port so we know that we have already generated a target
 		// for it.
 		sp.servicePorts = append(sp.servicePorts, port)
@@ -468,7 +468,7 @@ func (e *EndpointSlice) buildEndpointSlice(eps endpointSliceAdaptor) *targetgrou
 			}
 		}
 	}
-	level.Error(e.logger).Log("msg", "zytestingg buildEndpointSlice 6")
+	level.Error(e.logger).Log("msg", "zytestingg buildEndpointSlice 6", "epsname", eps.name())
 
 	return tg
 }
