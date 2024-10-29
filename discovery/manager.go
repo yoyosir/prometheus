@@ -301,22 +301,22 @@ func (m *Manager) cleaner(p *Provider) {
 	}
 }
 
-func (m *Manager) printgroup(updates []*targetgroup.Group) bool {
+func (m *Manager) printgroup(update *targetgroup.Group) bool {
 	//level.Warn(m.logger).Log("msg", "zytestingg printGroup")
 	found := false
-	for _, update := range updates {
-		//level.Warn(m.logger).Log("msg", "zytestingg printGroup 2")
-		targets := update.Targets
-		for _, target := range targets {
-			//level.Warn(m.logger).Log("msg", "zytestingg printGroup 3")
-			for k, v := range target {
-				level.Warn(m.logger).Log("msg", "zytestingg printGroup 2", "key", k, "value", v)
-				if strings.HasSuffix(string(v), ":11999") {
-					found = true
-				}
+	//for _, update := range updates {
+	level.Warn(m.logger).Log("msg", "zytestingg printGroup 2")
+	targets := update.Targets
+	for _, target := range targets {
+		level.Warn(m.logger).Log("msg", "zytestingg printGroup 3")
+		for k, v := range target {
+			level.Warn(m.logger).Log("msg", "zytestingg printGroup 2", "key", k, "value", v)
+			if strings.HasSuffix(string(v), ":11999") {
+				found = true
 			}
 		}
 	}
+	//}
 	return found
 }
 
@@ -328,7 +328,7 @@ func (m *Manager) updater(ctx context.Context, p *Provider, updates chan []*targ
 		case <-ctx.Done():
 			return
 		case tgs, ok := <-updates:
-			found := m.printgroup(tgs)
+			//found := m.printgroup(tgs)
 			m.metrics.ReceivedUpdates.Inc()
 			if !ok {
 				level.Debug(m.logger).Log("msg", "Discoverer channel closed", "provider", p.name)
@@ -338,9 +338,9 @@ func (m *Manager) updater(ctx context.Context, p *Provider, updates chan []*targ
 			}
 
 			p.mu.RLock()
-			if found {
-				level.Warn(m.logger).Log("msg", "zytestingg printGroupfound", "len", len(p.subs))
-			}
+			//if found {
+			//	level.Warn(m.logger).Log("msg", "zytestingg printGroupfound", "len", len(p.subs))
+			//}
 			for s := range p.subs {
 				m.updateGroup(poolKey{setName: s, provider: p.name}, tgs)
 			}
@@ -401,6 +401,10 @@ func (m *Manager) updateGroup(poolKey poolKey, tgs []*targetgroup.Group) {
 	}
 	for _, tg := range tgs {
 		if tg != nil { // Some Discoverers send nil target group so need to check for it to avoid panics.
+			found := m.printgroup(tg)
+			if found {
+				level.Warn(m.logger).Log("msg", "zytestingg printGroup 2FOUNDD", "poolkey", poolKey)
+			}
 			m.targets[poolKey][tg.Source] = tg
 		}
 	}
