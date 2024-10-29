@@ -300,6 +300,20 @@ func (m *Manager) cleaner(p *Provider) {
 	}
 }
 
+func (m *Manager) printgroup(updates []*targetgroup.Group) {
+	level.Warn(m.logger).Log("msg", "zytestingg printGroup")
+	for _, update := range updates {
+		level.Warn(m.logger).Log("msg", "zytestingg printGroup 2")
+		targets := update.Targets
+		for _, target := range targets {
+			level.Warn(m.logger).Log("msg", "zytestingg printGroup 3")
+			for k, v := range target {
+				level.Warn(m.logger).Log("msg", "zytestingg printGroup 2", "key", k, "value", v)
+			}
+		}
+	}
+}
+
 func (m *Manager) updater(ctx context.Context, p *Provider, updates chan []*targetgroup.Group) {
 	// Ensure targets from this provider are cleaned up.
 	defer m.cleaner(p)
@@ -308,6 +322,7 @@ func (m *Manager) updater(ctx context.Context, p *Provider, updates chan []*targ
 		case <-ctx.Done():
 			return
 		case tgs, ok := <-updates:
+			m.printgroup(tgs)
 			m.metrics.ReceivedUpdates.Inc()
 			if !ok {
 				level.Debug(m.logger).Log("msg", "Discoverer channel closed", "provider", p.name)
