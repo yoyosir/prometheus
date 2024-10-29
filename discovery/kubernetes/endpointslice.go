@@ -181,23 +181,29 @@ func (e *EndpointSlice) enqueue(obj interface{}) {
 
 // Run implements the Discoverer interface.
 func (e *EndpointSlice) Run(ctx context.Context, ch chan<- []*targetgroup.Group) {
+	level.Error(e.logger).Log("msg", "zytestingg eps run 1")
 	defer e.queue.ShutDown()
+	level.Error(e.logger).Log("msg", "zytestingg eps run 2")
 
 	cacheSyncs := []cache.InformerSynced{e.endpointSliceInf.HasSynced, e.serviceInf.HasSynced, e.podInf.HasSynced}
+	level.Error(e.logger).Log("msg", "zytestingg eps run 3")
 	if e.withNodeMetadata {
 		cacheSyncs = append(cacheSyncs, e.nodeInf.HasSynced)
 	}
+	level.Error(e.logger).Log("msg", "zytestingg eps run 4")
 	if !cache.WaitForCacheSync(ctx.Done(), cacheSyncs...) {
 		if !errors.Is(ctx.Err(), context.Canceled) {
 			level.Error(e.logger).Log("msg", "endpointslice informer unable to sync cache")
 		}
 		return
 	}
+	level.Error(e.logger).Log("msg", "zytestingg eps run 5")
 
 	go func() {
 		for e.process(ctx, ch) {
 		}
 	}()
+	level.Error(e.logger).Log("msg", "zytestingg eps run 6")
 
 	// Block until the target provider is explicitly canceled.
 	<-ctx.Done()
