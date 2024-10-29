@@ -205,11 +205,13 @@ func (e *EndpointSlice) Run(ctx context.Context, ch chan<- []*targetgroup.Group)
 
 func (e *EndpointSlice) process(ctx context.Context, ch chan<- []*targetgroup.Group) bool {
 	keyObj, quit := e.queue.Get()
+	level.Error(e.logger).Log("msg", "zytestingg keyObj from queue")
 	if quit {
 		return false
 	}
 	defer e.queue.Done(keyObj)
 	key := keyObj.(string)
+	level.Error(e.logger).Log("msg", "zytestingg keyObj from queue2", "key", key)
 
 	namespace, name, err := cache.SplitMetaNamespaceKey(key)
 	if err != nil {
