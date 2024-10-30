@@ -25,6 +25,8 @@ import (
 
 	"github.com/prometheus/common/model"
 
+	"github.com/go-kit/log"
+	"github.com/go-kit/log/level"
 	"github.com/prometheus/prometheus/config"
 	"github.com/prometheus/prometheus/discovery/targetgroup"
 	"github.com/prometheus/prometheus/model/histogram"
@@ -569,6 +571,45 @@ func TargetsFromGroup(tg *targetgroup.Group, cfg *config.ScrapeConfig, noDefault
 		}
 
 		lset, origLabels, err := PopulateLabels(lb, cfg, noDefaultPort)
+		if err != nil {
+			failures = append(failures, fmt.Errorf("instance %d in group %s: %w", i, tg, err))
+		}
+		if !lset.IsEmpty() || !origLabels.IsEmpty() {
+			targets = append(targets, NewTarget(lset, origLabels, cfg.Params))
+		}
+	}
+	return targets, failures
+}
+
+func TargetsFromGroupLog(tg *targetgroup.Group, cfg *config.ScrapeConfig, noDefaultPort bool, targets []*Target, lb *labels.Builder, lg log.Logger) ([]*Target, []error) {
+	targets = targets[:0]
+	failures := []error{}
+
+	for i, tlset := range tg.Targets {
+		lb.Reset(labels.EmptyLabels())
+		found := false
+		for ln, lv := range tlset {
+			lb.Set(string(ln), string(lv))
+			if string(ln) == "__address__" {
+				level.Error(lg).Log("msg", "zytestingg address", "address", string(lv))
+				if string(lv) == "11999" {
+					found = true
+					level.Error(lg).Log("msg", "zytestingg address FOUNDD", "address", string(lv))
+				}
+			}
+		}
+		for ln, lv := range tg.Labels {
+			if _, ok := tlset[ln]; !ok {
+				lb.Set(string(ln), string(lv))
+			}
+		}
+
+		lset, origLabels, err := PopulateLabels(lb, cfg, noDefaultPort)
+		if found {
+			for _, ll := range lset {
+				level.Error(lg).Log("msg", "zytestingg address FOUNDLABEL", "key", string(ll.Name), "value", string(ll.Value))
+			}
+		}
 		if err != nil {
 			failures = append(failures, fmt.Errorf("instance %d in group %s: %w", i, tg, err))
 		}

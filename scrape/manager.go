@@ -138,13 +138,13 @@ func (m *Manager) Run(tsets <-chan map[string][]*targetgroup.Group) error {
 		select {
 		case ts := <-tsets:
 			m.updateTsets(ts)
-			for _, v := range ts {
-				for _, tg := range v {
-					if m.printgroup(tg) {
-						level.Warn(m.logger).Log("msg", "zytestingg scrape printGroup FOUNDDD")
-					}
-				}
-			}
+			//for _, v := range ts {
+			//	for _, tg := range v {
+			//		if m.printgroup(tg) {
+			//			level.Warn(m.logger).Log("msg", "zytestingg scrape printGroup FOUNDDD")
+			//		}
+			//	}
+			//}
 
 			select {
 			case m.triggerReload <- struct{}{}:
@@ -186,6 +186,11 @@ func (m *Manager) reload() {
 	m.mtxScrape.Lock()
 	var wg sync.WaitGroup
 	for setName, groups := range m.targetSets {
+		for _, group := range groups {
+			if m.printgroup(group) {
+				level.Warn(m.logger).Log("msg", "zytestingg scrape printGroup FOUNDDD")
+			}
+		}
 		if _, ok := m.scrapePools[setName]; !ok {
 			scrapeConfig, ok := m.scrapeConfigs[setName]
 			if !ok {
