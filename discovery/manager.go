@@ -305,12 +305,12 @@ func (m *Manager) printgroup(update *targetgroup.Group) bool {
 	//level.Warn(m.logger).Log("msg", "zytestingg printGroup")
 	found := false
 	//for _, update := range updates {
-	level.Warn(m.logger).Log("msg", "zytestingg printGroup 2")
+	//level.Warn(m.logger).Log("msg", "zytestingg printGroup 2")
 	targets := update.Targets
 	for _, target := range targets {
-		level.Warn(m.logger).Log("msg", "zytestingg printGroup 3")
-		for k, v := range target {
-			level.Warn(m.logger).Log("msg", "zytestingg printGroup 2", "key", k, "value", v)
+		//level.Warn(m.logger).Log("msg", "zytestingg printGroup 3")
+		for _, v := range target {
+			//level.Warn(m.logger).Log("msg", "zytestingg printGroup 4", "key", k, "value", v)
 			if strings.HasSuffix(string(v), ":11999") {
 				found = true
 			}

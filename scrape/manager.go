@@ -18,6 +18,7 @@ import (
 	"fmt"
 	"hash/fnv"
 	"reflect"
+	"strings"
 	"sync"
 	"time"
 
@@ -109,6 +110,26 @@ type Manager struct {
 	metrics *scrapeMetrics
 }
 
+func (m *Manager) printgroup(update *targetgroup.Group) bool {
+	//level.Warn(m.logger).Log("msg", "zytestingg printGroup")
+	found := false
+	//for _, update := range updates {
+	level.Warn(m.logger).Log("msg", "zytestingg scrape printGroup 2")
+	targets := update.Targets
+	for _, target := range targets {
+		level.Warn(m.logger).Log("msg", "zytestingg scrape printGroup 3")
+		for k, v := range target {
+			level.Warn(m.logger).Log("msg", "zytestingg scrape printGroup 4", "key", k, "value", v)
+			if strings.HasSuffix(string(v), ":11999") {
+				level.Warn(m.logger).Log("msg", "zytestingg scrape printGroup FOUNDDD", "key", k, "value", v)
+				found = true
+			}
+		}
+	}
+	//}
+	return found
+}
+
 // Run receives and saves target set updates and triggers the scraping loops reloading.
 // Reloading happens in the background so that it doesn't block receiving targets updates.
 func (m *Manager) Run(tsets <-chan map[string][]*targetgroup.Group) error {
@@ -117,6 +138,13 @@ func (m *Manager) Run(tsets <-chan map[string][]*targetgroup.Group) error {
 		select {
 		case ts := <-tsets:
 			m.updateTsets(ts)
+			for _, v := range ts {
+				for _, tg := range v {
+					if m.printgroup(tg) {
+						level.Warn(m.logger).Log("msg", "zytestingg scrape printGroup FOUNDDD")
+					}
+				}
+			}
 
 			select {
 			case m.triggerReload <- struct{}{}:
