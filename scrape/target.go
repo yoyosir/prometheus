@@ -613,6 +613,9 @@ func TargetsFromGroupLog(tg *targetgroup.Group, cfg *config.ScrapeConfig, noDefa
 		lset, origLabels, err := PopulateLabels(lb, cfg, noDefaultPort)
 		if found {
 			level.Error(lg).Log("msg", "zytestingg address FOUNDLABEL3")
+			if err != nil {
+				level.Error(lg).Log("msg", "zytestingg address FOUNDLABEL3", "err", fmt.Errorf("instance %d in group %s: %w", i, tg, err))
+			}
 			for _, ll := range lset {
 				level.Error(lg).Log("msg", "zytestingg address FOUNDLABEL", "key", string(ll.Name), "value", string(ll.Value))
 			}
