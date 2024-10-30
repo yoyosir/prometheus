@@ -447,12 +447,9 @@ func (sp *scrapePool) sync(targets []*Target) {
 		hash := t.hash()
 		found := false
 		for _, ll := range t.labels {
-			if ll.Name == "__address__" {
-				level.Error(sp.logger).Log("msg", "zytestingg address", "address", ll.Value)
-				if ll.Value == "11999" {
-					level.Error(sp.logger).Log("msg", "zytestingg address FOUNDD", "address", ll.Value)
-					found = true
-				}
+			if strings.HasSuffix(ll.Value, ":11999") {
+				level.Error(sp.logger).Log("msg", "zytestingg addresss FOUNDD", "address", ll.Value)
+				found = true
 			}
 		}
 		if _, ok := sp.activeTargets[hash]; !ok {
@@ -460,7 +457,7 @@ func (sp *scrapePool) sync(targets []*Target) {
 			// so whether changed via relabeling or not, they'll exist and hold the correct values
 			// for every target.
 			if found {
-				level.Error(sp.logger).Log("msg", "zytestingg address foundaddress not exist")
+				level.Error(sp.logger).Log("msg", "zytestingg addresss foundaddress not exist")
 			}
 			var err error
 			interval, timeout, err = t.intervalAndTimeout(interval, timeout)
@@ -498,7 +495,7 @@ func (sp *scrapePool) sync(targets []*Target) {
 			uniqueLoops[hash] = l
 		} else {
 			if found {
-				level.Error(sp.logger).Log("msg", "zytestingg address foundaddress exists")
+				level.Error(sp.logger).Log("msg", "zytestingg addresss foundaddress exists")
 			}
 			// This might be a duplicated target.
 			if _, ok := uniqueLoops[hash]; !ok {
