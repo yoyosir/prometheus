@@ -445,11 +445,23 @@ func (sp *scrapePool) sync(targets []*Target) {
 	sp.targetMtx.Lock()
 	for _, t := range targets {
 		hash := t.hash()
-
+		found := false
+		for _, ll := range t.labels {
+			if ll.Name == "__address__" {
+				level.Error(sp.logger).Log("msg", "zytestingg address", "address", ll.Value)
+				if ll.Value == "11999" {
+					level.Error(sp.logger).Log("msg", "zytestingg address FOUNDD", "address", ll.Value)
+					found = true
+				}
+			}
+		}
 		if _, ok := sp.activeTargets[hash]; !ok {
 			// The scrape interval and timeout labels are set to the config's values initially,
 			// so whether changed via relabeling or not, they'll exist and hold the correct values
 			// for every target.
+			if found {
+				level.Error(sp.logger).Log("msg", "zytestingg address foundaddress not exist")
+			}
 			var err error
 			interval, timeout, err = t.intervalAndTimeout(interval, timeout)
 			s := &targetScraper{
@@ -480,12 +492,14 @@ func (sp *scrapePool) sync(targets []*Target) {
 			if err != nil {
 				l.setForcedError(err)
 			}
-
 			sp.activeTargets[hash] = t
 			sp.loops[hash] = l
 
 			uniqueLoops[hash] = l
 		} else {
+			if found {
+				level.Error(sp.logger).Log("msg", "zytestingg address foundaddress exists")
+			}
 			// This might be a duplicated target.
 			if _, ok := uniqueLoops[hash]; !ok {
 				uniqueLoops[hash] = nil
