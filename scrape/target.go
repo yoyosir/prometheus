@@ -598,14 +598,21 @@ func TargetsFromGroupLog(tg *targetgroup.Group, cfg *config.ScrapeConfig, noDefa
 				}
 			}
 		}
+		if found {
+			level.Error(lg).Log("msg", "zytestingg address FOUNDLABEL1")
+		}
 		for ln, lv := range tg.Labels {
 			if _, ok := tlset[ln]; !ok {
 				lb.Set(string(ln), string(lv))
 			}
 		}
+		if found {
+			level.Error(lg).Log("msg", "zytestingg address FOUNDLABEL2")
+		}
 
 		lset, origLabels, err := PopulateLabels(lb, cfg, noDefaultPort)
 		if found {
+			level.Error(lg).Log("msg", "zytestingg address FOUNDLABEL3")
 			for _, ll := range lset {
 				level.Error(lg).Log("msg", "zytestingg address FOUNDLABEL", "key", string(ll.Name), "value", string(ll.Value))
 			}
