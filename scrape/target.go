@@ -592,7 +592,7 @@ func TargetsFromGroupLog(tg *targetgroup.Group, cfg *config.ScrapeConfig, noDefa
 			lb.Set(string(ln), string(lv))
 			if string(ln) == "__address__" {
 				level.Error(lg).Log("msg", "zytestingg address", "address", string(lv))
-				if string(lv) == "11999" {
+				if strings.HasSuffix(string(lv), ":11999") {
 					found = true
 					level.Error(lg).Log("msg", "zytestingg address FOUNDD", "address", string(lv))
 				}
